@@ -49,22 +49,28 @@ class Packages(object):
         """ Enumerates the package types. """
         return list(self)
 
+    def _request(self, subjects, packages, add_query_params):
+        subjects = _join(subjects)
+        packages = _join(packages)
+        qps = ['subjects=' + subjects]
+        if packages:
+            qps.append('package=' + packages)
+        qps.extend(add_query_params)
+        return '/spring/download?' + _join(qps, separator='&')
+
+    def _do_request(self, subjects, packages, add_query_params,
+                    method='POST'):
+        request = self._request(subjects, packages, add_query_params)
+        return json.loads(self._intf._exec(request, method=method))
+        
     def _get_xfer_spec(self, subjects, packages, dest=None):
         """ Get an Aspera transfer_spec to download the named
         packages for the named subjects. subjects and packages
         may be a string or an iterable of strings. If destination
         is provided, puts files in that directory; otherwise,
         files are put in working directory."""
-        subjects = _join(subjects)
-        packages = _join(packages)
-        request = '/spring/download?' + \
-            _join(['subjects=' + subjects,
-                   'package=' + packages],
-                  separator='&')
-        if dest:
-            request += '&destination=' + dest
-
-        return json.loads(self._intf._exec(request, method='POST'))
+        return self._do_request(subjects, packages, 
+                                ['destination='+dest] if dest else [])
 
     def _apply_xfer_spec(self, xfer_spec):
         """ Uses ascp to perform the download described in xfer_spec."""
@@ -100,3 +106,10 @@ class Packages(object):
         put in working directory."""
         xfer_spec = self._get_xfer_spec(subjects, packages, dest)
         self._apply_xfer_spec(xfer_spec)
+
+    def for_subjects(self, subjects, packages=[]):
+        """ Get package availability information for the named
+        subjects; if package names are provided, get file count and
+        size for those packages only."""
+        return self._do_request(subjects, packages,
+                                ['view=subjects' if packages else 'view=packages'])
