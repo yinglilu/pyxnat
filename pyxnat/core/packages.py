@@ -6,17 +6,34 @@
 
 import json
 import os
+import platform
 import subprocess
 
 def _join(xs, separator=','):
     """If xs is a string, return it; otherwise, join it with separator."""
     return xs if isinstance(xs,basestring) else separator.join(xs)
 
+_system = platform.system();
+_connectpaths = { 'Darwin': '/Applications/Aspera Connect.app',
+                 'Linux': '/.aspera/connect' }
+_connectpath = _connectpaths[_system]
+_binpaths = { 'Darwin': '/Contents/Resources', 'Linux': '/bin' }
+_binpath = _binpaths[_system]
+_etcpaths = { 'Darwin': '/Contents/Resources', 'Linux': '/etc' }
+_etcpath = _etcpaths[_system]
+
 def _aspera_connectdir():
-    return os.getenv('ASPERA_CONNECTDIR') or os.getenv('HOME') + "/.aspera/connect"
+    return os.getenv('ASPERA_CONNECTDIR') or \
+        os.getenv('HOME') + _connectpath
+
+def _aspera_bindir():
+    return os.getenv('ASPERA_BINDIR') or _aspera_connectdir() + _binpath
+
+def _aspera_etcdir():
+    return os.getenv('ASPERA_ETCDIR') or _aspera_connectdir() + _etcpath
 
 def _aspera_ascp():
-    return os.getenv('ASCP') or _aspera_connectdir() + '/bin/ascp';
+    return os.getenv('ASCP') or _aspera_bindir() + '/ascp'
 
 _xfer_spec_mapping = {
     'remote_user': '--user',
@@ -76,7 +93,7 @@ class Packages(object):
         """ Uses ascp to perform the download described in xfer_spec."""
         command = [_aspera_ascp(), '-p']
         command.append('-i')
-        command.append(_aspera_connectdir() + '/etc/asperaweb_id_dsa.openssh')
+        command.append(_aspera_etcdir() + '/asperaweb_id_dsa.openssh')
         for key, val in xfer_spec.iteritems():
             if key in _xfer_spec_mapping:
                 arg = _xfer_spec_mapping[key]
