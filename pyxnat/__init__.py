@@ -8,7 +8,7 @@ servers.
 Visit http://packages.python.org/pyxnat for more information.
 """
 
-__version__ = '0.9.4'
+__version__ = '0.9.5-SNAPSHOT'
 
 from .core import Interface
 from .core import SearchManager
@@ -28,3 +28,4 @@ from .core import jsonutil
 from .core import uriutil
 from .core import xpass
 from .core import xpath_store
+from .core import Packages

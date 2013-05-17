@@ -26,6 +26,7 @@ from .errors import is_xnat_error
 from .errors import catch_error
 from .array import ArrayData
 from .xpath_store import XpathStore
+from .packages import Packages
 from . import xpass
 
 
@@ -212,7 +213,8 @@ class Interface(object):
         self.cache = CacheManager(self)
         self.manage = GlobalManager(self)
         self.xpath = XpathStore(self)
-
+        self.packages = Packages(self)
+        
         if _DRAW_GRAPHS:
             self._get_graph = GraphData(self)
             self.draw = PaintGraph(self)
