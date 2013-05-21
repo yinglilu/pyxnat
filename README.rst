@@ -2,6 +2,14 @@ The homepage of pyxnat with user documentation is located on:
 
 http://packages.python.org/pyxnat/
 
+The hcp-db branch of this repository is customized for accessing
+the Human Connectome Project's ConnectomeDB (https://db.humanconnectome.org)
+and the Amazon S3 mirror of the HCP Q1 data for the OHBM Hackathon
+(http://www.humanbrainmapping.org/i4a/pages/index.cfm?pageID=3544).
+
+A tutorial for using pyxnat with ConnectomeDB is available:
+https://wiki.humanconnectome.org/display/DataUse/ConnectomeDB%2C+pyxnat%2C+and+the+OHBM+Hackathon
+
 Getting the latest code
 =========================
 
