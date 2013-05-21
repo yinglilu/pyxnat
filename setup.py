@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 
-from distutils.core import setup
+from setuptools import setup
 import sys
 
-import pyxnat
+exec(open('pyxnat/version.py').read())
 
 # For some commands, use setuptools
 if len(set(['develop', 'sdist', 'release', 'bdist_egg', 'bdist_rpm', 'bdist',
@@ -17,8 +17,7 @@ if not 'extra_setuptools_args' in globals():
     extra_setuptools_args = dict()
 
 setup(name='pyxnat',
-      version=pyxnat.__version__,
-      summary='XNAT in Python',
+      version=__version__,
       author='Yannick Schwartz',
       author_email='yannick.schwartz@cea.fr',
       url='http://packages.python.org/pyxnat/',
@@ -32,8 +31,8 @@ setup(name='pyxnat',
                                'core/*.py',
                                '*.py'],
                     },
-      description="""Xnat in Python""",
-      long_description=pyxnat.__doc__,
+      description="""XNAT in Python""",
+      long_description="""Python interface to XNAT REST API""",
       license='BSD',
       classifiers=[
           'Development Status :: 4 - Beta',
@@ -49,5 +48,6 @@ setup(name='pyxnat',
           'Topic :: Internet :: WWW/HTTP',
       ],
 
-      platforms='any', requires=['httplib2'],
+      platforms='any',
+      install_requires=['lxml','httplib2','boto'],
       **extra_setuptools_args)
