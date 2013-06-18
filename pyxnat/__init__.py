@@ -29,3 +29,4 @@ from .core import uriutil
 from .core import xpass
 from .core import xpath_store
 from .core import Packages
+from .core import S3Mirror

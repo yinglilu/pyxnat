@@ -1361,6 +1361,18 @@ class Subject(EObject):
         """
         self._intf._exec(join_uri(self._uri, 'projects', project), 'DELETE')
 
+    def files(self, subdir=None):
+        """ Retrieve a list of local pathnames for data files for the
+            (optional) specified subdirectory for this subject. Downloads
+            files to populate the local mirror as necessary. Requires
+            a properly configured mirror in the Interface object.
+
+            Parameters
+            ----------
+                subdir: string
+                    Request root path, relative to the subject directory
+        """
+        return self._intf._mirror.paths_for_subject(self.label(),subdir)
 
 class Experiment(EObject):
     __metaclass__ = ElementType

@@ -1,4 +1,4 @@
-# package.py
+# packages.py
 # pyxnat support for ConnectomeDB download packages
 # 
 # Copyright (c) 2013 Washington University School of Medicine

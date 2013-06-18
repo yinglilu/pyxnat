@@ -8,3 +8,4 @@ from .select import Select
 from .help import Inspector
 from .users import Users
 from .packages import Packages
+from .mirror import S3Mirror

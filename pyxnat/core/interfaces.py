@@ -74,7 +74,7 @@ class Interface(object):
 
     def __init__(self, server=None, user=None, password=None,
                  cachedir=tempfile.gettempdir(), config=None,
-                 anonymous=False, proxy=None):
+                 anonymous=False, proxy=None, data_mirror=None):
         """
             Parameters
             ----------
@@ -110,10 +110,14 @@ class Interface(object):
                 specify a username and password for proxy access, prepend them
                 to the hostname:
                 http://user:pass@hostname:port
-
+            data_mirror: pyxnat.core.mirror.Mirror | None
+                If set, use this object to build a local mirror of the
+                XNAT data.
         """
 
         self._interactive = False
+
+        self._mirror = data_mirror
 
         self._anonymous = anonymous
 
