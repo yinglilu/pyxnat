@@ -4,10 +4,8 @@
 # Copyright (c) 2013 Washington University School of Medicine
 # Author: Kevin A. Archie <karchie@wustl.edu>
 
-import json
-import os
-import platform
-import subprocess
+import json, os, platform, subprocess
+from pyxnat import __version__
 
 def _join(xs, separator=','):
     """If xs is a string, return it; otherwise, join it with separator."""
@@ -113,7 +111,13 @@ class Packages(object):
         command.append('destination_root' in xfer_spec
                        and xfer_spec['destination_root']
                        or '.')
-        subprocess.check_output(command)
+        cookie='XDATUser={};User-Agent=pyxnat {}/{} {}'.format(
+            self._intf._user, __version__,
+            platform.python_implementation(), platform.python_version())
+        print 'cookie =', cookie
+        subprocess.check_output(command, env = {
+            'ASPERA_SCP_COOKIE':cookie,
+        })
 
     def download(self, subjects, packages, dest=None):
         """ Use the Aspera command-line client to download the named
