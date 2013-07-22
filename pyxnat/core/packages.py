@@ -4,14 +4,31 @@
 # Copyright (c) 2013 Washington University School of Medicine
 # Author: Kevin A. Archie <karchie@wustl.edu>
 
-import json
-import os
-import platform
-import subprocess
+import json, os, platform, subprocess
+from itertools import chain
+from pyxnat import __version__
+from .resources import EObject
 
 def _join(xs, separator=','):
-    """If xs is a string, return it; otherwise, join it with separator."""
-    return xs if isinstance(xs,basestring) else separator.join(xs)
+    """If xs is a string, return it;
+    Otherwise, treat it as an iterable. If the first element is
+    a pyxnat EObject, call label() on each element and join the
+    result with separators. If not an EObject, join the elements
+    directly (hoping that they're strings).
+    """
+    if isinstance(xs,basestring):
+        return xs;
+    try:
+        xsi = iter(xs)
+        first = xsi.next()
+    except StopIteration:
+        return None
+    else:
+        xsi = chain([first],xsi)
+        if isinstance(first,EObject):
+            return separator.join([x.label() for x in xsi])
+        else:
+            return separator.join(xsi)
 
 _system = platform.system();
 _connectpaths = { 'Darwin': '/Applications/Aspera Connect.app',
@@ -113,7 +130,12 @@ class Packages(object):
         command.append('destination_root' in xfer_spec
                        and xfer_spec['destination_root']
                        or '.')
-        subprocess.check_output(command)
+        subprocess.check_output(command, env = {
+            'ASPERA_SCP_COOKIE' :
+            'XDATUser={};User-Agent=pyxnat {}/{} {}'.format(
+                self._intf._user, __version__,
+                platform.python_implementation(), platform.python_version())
+        })
 
     def download(self, subjects, packages, dest=None):
         """ Use the Aspera command-line client to download the named
