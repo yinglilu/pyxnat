@@ -657,6 +657,9 @@ class CObject(object):
                 id_header = self._id_header
 
             for res in self._call([id_header] + self._columns):
+                # connectomeDB projects have 'id' instead of ID 
+                if 'id' in res and not id_header in res:
+                    res[id_header] = res['id']
                 try:
                     eid = urllib.unquote(res[id_header])
                     if fnmatch(eid, self._pattern):
