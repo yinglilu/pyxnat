@@ -97,14 +97,16 @@ class Packages(object):
         request = self._request(subjects, packages, add_query_params)
         return json.loads(self._intf._exec(request, method=method))
         
-    def _get_xfer_spec(self, subjects, packages, dest=None):
+    def _get_xfer_spec(self, project, subjects, packages, dest=None):
         """ Get an Aspera transfer_spec to download the named
         packages for the named subjects. subjects and packages
         may be a string or an iterable of strings. If destination
         is provided, puts files in that directory; otherwise,
         files are put in working directory."""
-        return self._do_request(subjects, packages, 
-                                ['destination='+dest] if dest else [])
+        qps = ['project='+project]
+        if dest:
+            qps.append('destination='+dest)
+        return self._do_request(subjects, packages, qps)
 
     def _apply_xfer_spec(self, xfer_spec):
         """ Uses ascp to perform the download described in xfer_spec."""
@@ -137,13 +139,13 @@ class Packages(object):
                 platform.python_implementation(), platform.python_version())
         })
 
-    def download(self, subjects, packages, dest=None):
+    def download(self, project, subjects, packages, dest=None):
         """ Use the Aspera command-line client to download the named
         packages for the named subjects. subjects and packages may be
         a string or an iterable of strings. If destination is
         provided, puts files in that directory; otherwise, files are
         put in working directory."""
-        xfer_spec = self._get_xfer_spec(subjects, packages, dest)
+        xfer_spec = self._get_xfer_spec(project, subjects, packages, dest)
         self._apply_xfer_spec(xfer_spec)
 
     def for_subjects(self, subjects, packages=[]):
@@ -151,4 +153,5 @@ class Packages(object):
         subjects; if package names are provided, get file count and
         size for those packages only."""
         return self._do_request(subjects, packages,
-                                ['view=subjects' if packages else 'view=packages'])
+                                ['view=subjects' if packages else 'view=packages'],
+                                method='GET')
