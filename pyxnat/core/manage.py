@@ -268,12 +268,12 @@ class PreArchive(object):
     def move (self, uris, new_project):
         add_src = lambda u: urllib.urlencode({'src':u})
 
-        async = len(uris) > 1 and 'true' or 'false'
-        print(async)
+        async_ = len(uris) > 1 and 'true' or 'false'
+        print(async_)
 
         post_body = '&'.join ((map(add_src,uris))
                             + [urllib.urlencode({'newProject':new_project})]
-                            + [urllib.urlencode({'async':async})])
+                            + [urllib.urlencode({'async':async_})])
 
         request_uri = '/data/services/prearchive/move?format=csv'
         return self._intf._exec(request_uri ,'POST', post_body,
